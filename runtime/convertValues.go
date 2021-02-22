@@ -148,20 +148,8 @@ func exportValueWithInterpreter(
 				return nil
 			}
 			return exportValueWithInterpreter(*referencedValue, inter, results)
-		case interpreter.AccountKeyValue:
-			return exportBuiltinStructValue(
-				inter,
-				results,
-				v.DynamicType(inter),
-				v.KeyIndex,
-				v.PublicKey,
-				v.HashAlgo,
-				v.Weight,
-				v.IsRevoked,
-			)
-
-		case interpreter.PublicKeyValue:
-			return exportBuiltinStructValue(inter, results, v.DynamicType(inter), v.PublicKey, v.SignAlgo)
+		case *interpreter.BuiltinStructValue:
+			return exportBuiltinStructValue(v, inter, results)
 		}
 
 		panic(fmt.Sprintf("cannot export value of type %T", value))
@@ -296,21 +284,20 @@ func exportCapabilityValue(v interpreter.CapabilityValue, inter *interpreter.Int
 	}
 }
 
-func exportBuiltinStructValue(
-	inter *interpreter.Interpreter,
-	results exportResults,
-	dynamicType interpreter.DynamicType,
-	fieldValues ...interpreter.Value,
-) cadence.Value {
+func exportBuiltinStructValue(v *interpreter.BuiltinStructValue, inter *interpreter.Interpreter, results exportResults) cadence.Value {
 
-	builtinDynamicType := dynamicType.(interpreter.BuiltinStructDynamicType)
+	builtinDynamicType := v.DynamicType(inter).(interpreter.BuiltinStructDynamicType)
 
-	// convert internal type to exported type
+	// Convert internal type to exported type.
 	exportedBuiltinStructType := exportBuiltinStructType(builtinDynamicType.StaticType, map[sema.TypeID]cadence.Type{})
 
-	fields := make([]cadence.Value, len(fieldValues))
-	for index, field := range fieldValues {
-		fields[index] = exportValueWithInterpreter(field, inter, results)
+	fieldNames := exportedBuiltinStructType.Fields
+	fields := make([]cadence.Value, len(fieldNames))
+
+	// NOTE: use the exported type's fields to ensure fields in type and value are in sync.
+	for index, field := range fieldNames {
+		fieldValue := v.Fields[field.Identifier]
+		fields[index] = exportValueWithInterpreter(fieldValue, inter, results)
 	}
 
 	return cadence.NewBuiltinStruct(exportedBuiltinStructType, fields)

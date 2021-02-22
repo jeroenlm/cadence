@@ -62,8 +62,7 @@ type Visitor interface {
 	VisitBoundFunctionValue(interpreter *Interpreter, value BoundFunctionValue)
 	VisitAuthAccountContractsValue(interpreter *Interpreter, value AuthAccountContractsValue)
 	VisitDeployedContractValue(interpreter *Interpreter, value DeployedContractValue)
-	VisitAccountKeyValue(interpreter *Interpreter, value AccountKeyValue)
-	VisitPublicKeyValue(interpreter *Interpreter, value PublicKeyValue)
+	VisitBuiltinStructValue(interpreter *Interpreter, value *BuiltinStructValue)
 }
 
 type EmptyVisitor struct {
@@ -110,8 +109,7 @@ type EmptyVisitor struct {
 	BoundFunctionValueVisitor        func(interpreter *Interpreter, value BoundFunctionValue)
 	AuthAccountContractsValueVisitor func(interpreter *Interpreter, value AuthAccountContractsValue)
 	DeployedContractValueVisitor     func(interpreter *Interpreter, value DeployedContractValue)
-	AccountKeyValueVisitor           func(interpreter *Interpreter, value AccountKeyValue)
-	PublicKeyValueVisitor            func(interpreter *Interpreter, value PublicKeyValue)
+	BuiltinStructValueVisitor        func(interpreter *Interpreter, value *BuiltinStructValue)
 }
 
 var _ Visitor = &EmptyVisitor{}
@@ -417,16 +415,9 @@ func (v EmptyVisitor) VisitDeployedContractValue(interpreter *Interpreter, value
 	v.DeployedContractValueVisitor(interpreter, value)
 }
 
-func (v EmptyVisitor) VisitAccountKeyValue(interpreter *Interpreter, value AccountKeyValue) {
-	if v.AccountKeyValueVisitor == nil {
+func (v EmptyVisitor) VisitBuiltinStructValue(interpreter *Interpreter, value *BuiltinStructValue) {
+	if v.BuiltinStructValueVisitor == nil {
 		return
 	}
-	v.AccountKeyValueVisitor(interpreter, value)
-}
-
-func (v EmptyVisitor) VisitPublicKeyValue(interpreter *Interpreter, value PublicKeyValue) {
-	if v.PublicKeyValueVisitor == nil {
-		return
-	}
-	v.PublicKeyValueVisitor(interpreter, value)
+	v.BuiltinStructValueVisitor(interpreter, value)
 }

@@ -7769,11 +7769,18 @@ func getMembersAsMap(members []*Member) *StringMemberOrderedMap {
 	return membersMap
 }
 
+const AccountKeyTypeName = "AccountKey"
+const AccountKeyKeyIndexField = "keyIndex"
+const AccountKeyPublicKeyField = "publicKey"
+const AccountKeyHashAlgoField = "hashAlgo"
+const AccountKeyWeightField = "weight"
+const AccountKeyIsRevokedField = "isRevoked"
+
 // AccountKeyType represents the key associated with an account.
 var AccountKeyType = func() *BuiltinStructType {
 
 	accountKeyType := &BuiltinStructType{
-		Identifier: "AccountKey",
+		Identifier: AccountKeyTypeName,
 	}
 
 	const accountKeyIndexFieldDocString = `The index of the account key`
@@ -7785,31 +7792,31 @@ var AccountKeyType = func() *BuiltinStructType {
 	var members = []*Member{
 		NewPublicConstantFieldMember(
 			accountKeyType,
-			"keyIndex",
+			AccountKeyKeyIndexField,
 			&IntType{},
 			accountKeyIndexFieldDocString,
 		),
 		NewPublicConstantFieldMember(
 			accountKeyType,
-			"publicKey",
+			AccountKeyPublicKeyField,
 			PublicKeyType,
 			accountKeyPublicKeyFieldDocString,
 		),
 		NewPublicConstantFieldMember(
 			accountKeyType,
-			"hashAlgo",
+			AccountKeyHashAlgoField,
 			&StringType{},
 			accountKeyHashAlgorithmFieldDocString,
 		),
 		NewPublicConstantFieldMember(
 			accountKeyType,
-			"weight",
+			AccountKeyWeightField,
 			&UFix64Type{},
 			accountKeyWeightFieldDocString,
 		),
 		NewPublicConstantFieldMember(
 			accountKeyType,
-			"isRevoked",
+			AccountKeyIsRevokedField,
 			&BoolType{},
 			accountKeyIsRevokedFieldDocString,
 		),
@@ -7819,11 +7826,15 @@ var AccountKeyType = func() *BuiltinStructType {
 	return accountKeyType
 }()
 
+const PublicKeyTypeName = "PublicKey2"
+const PublicKeyPublicKeyField = "publicKey"
+const PublicKeySignAlgoField = "signAlgo"
+
 // PublicKeyType represents the public key associated with an account key.
 var PublicKeyType = func() *BuiltinStructType {
 
 	accountKeyType := &BuiltinStructType{
-		Identifier: "PublicKey2",
+		Identifier: PublicKeyTypeName,
 		Members:    nil,
 	}
 
@@ -7833,13 +7844,13 @@ var PublicKeyType = func() *BuiltinStructType {
 	var members = []*Member{
 		NewPublicConstantFieldMember(
 			accountKeyType,
-			"publicKey",
+			PublicKeyPublicKeyField,
 			&VariableSizedType{Type: &UInt8Type{}},
 			publicKeyKeyFieldDocString,
 		),
 		NewPublicConstantFieldMember(
 			accountKeyType,
-			"signAlgo",
+			PublicKeySignAlgoField,
 			&StringType{},
 			publicKeySignAlgoFieldDocString,
 		),

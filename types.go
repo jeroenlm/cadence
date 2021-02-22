@@ -940,7 +940,6 @@ func (PublicAccountType) ID() string {
 type BuiltinStructType struct {
 	Identifier   string
 	Fields       []Field
-	Initializers [][]Parameter
 }
 
 func (*BuiltinStructType) isType() {}
