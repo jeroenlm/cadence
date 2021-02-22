@@ -1,3 +1,5 @@
+[![Build Status](https://github.com/onflow/cadence/actions/workflows/ci.yml/badge.svg?branch=master)](https://github.com/onflow/cadence/actions/workflows/ci.yml)
+
 # Cadence
 
 <img src="https://raw.githubusercontent.com/onflow/cadence/master/cadence_furever.png" width="300" />
